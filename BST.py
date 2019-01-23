@@ -34,39 +34,93 @@ class Node:
 
     def delete(self, value):
         node, parent = self.search(value)
-        if node.left is None and node.right:
-            parent.left = node.right
-        elif node.left and node.right is None:
-            parent.right = node.left
-        elif node.left and node.right:
-            
-        else:
+        if Node is not None:
+            child_count = node.count_children()      # so I need to make this ...?
+
+        if child_count == 0:
             if parent:
-                if parent.left and parent.left.value == node.value:
-                    parent.left == None
-                elif parent.right and parent.right.value == node.value:
-                    parent.right == None
+                if parent.left is node:
+                    parent.left = None
+                else:
+                    parent.right = None
+                del node
+            else: 
+                self.value = None
+                
+                
+        elif child_count == 1:
+            if node.left:
+                n = node.left
             else:
-                self.
-            
+                n = node.right
+            if parent:
+                if parent.left is node:
+                    parent.left = n
+                else:
+                    parent.right = n
+                del node
+            else:
+                self.left = n.left
+                self.right = n.right
+                self.value = n.value
+        
+        else:
+            parent = node
+            successor = node.right
+            while successor.left:
+                parent = successor
+                successor = successor.left 
+            node.value = successor.value
+            if parent.left == successor:
+                parent.left = successor.right
+            else:
+                parent.right = successor.right
 
+    def count_children(self):
+        count = 0
+        if self.left:
+            count += 1
+        if self.right:
+            count += 1
+        return count
 
+    def print_tree(self):
+        
+        if self.left:
+            self.left.print_tree()
+        print (self.value)
+        if self.right:
+            self.right.print_tree()
 
-    def printN(self):
-        print(self.value)
-    def printR(self):
-        print(self.right.value)
-    def printL(self):
-        print(self.left.value)
-
+    def addList(self, list):
+        for i in list:
+            self.add(i)
+        
+    def compare_trees(self, node):
+        if node is None:
+            return False
+        elif self.value != node.value:
+            return False
+        result = True
+        if self.left is None:
+            if node.left:
+                return False
+        else:
+            result = self.left.compare_trees(node.left)
+        if result is False:
+            return False
+        if self.right is None:
+            if node.right:
+                return False
+        else:
+            result = self.right.compare_trees(node.right)
+        return result
 
 root = Node(8)
-root.add(9)
-root.add(1)
-root.add(10)
+root.addList([3,10])
+root2 = Node(8)
+root.addList([3,11])
 
-print(root.search(10)[0].value)
+print(root.compare_trees(root2))
 
-root.printN()
-root.printR()
-root.printL()
+#root.print_tree()
